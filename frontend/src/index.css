@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    min-width: 100%;
+    min-height: 100vh;
+    font-family: 'poppins', sans-serif;
+    background-color: #F7F6FB;
+    display: grid;
+    place-items: center;
+  }
+
+  #root {
+    width: 100%;
+  }
+}
