@@ -18,3 +18,7 @@
     width: 100%;
   }
 }
+
+.react-responsive-modal-modal {
+  width: 25%;
+}

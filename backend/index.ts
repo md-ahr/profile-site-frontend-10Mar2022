@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/dbConfig';
 import { notFound, errorHandler } from './middlewares/appErrorHandler';
-import loginRoute from './routes/authRoute';
+import authRoute from './routes/authRoute';
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(`${API_PREFIX}/auth`, loginRoute);
+app.use(`${API_PREFIX}/auth`, authRoute);
 
 app.use(notFound);
 app.use(errorHandler);

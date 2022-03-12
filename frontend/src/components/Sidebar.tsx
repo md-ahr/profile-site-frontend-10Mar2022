@@ -1,11 +1,24 @@
 import { FaRegEdit } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import { useGlobalState, useGlobalDispatch } from '../context/userContext';
 
 const Sidebar = () => {
+
+    const { user }: any = useGlobalState();
+    const dispatch: any = useGlobalDispatch();
+
+    console.log(user);
+
+    const handleLogout = () => {
+        toast.info('User successfully logout!');
+        dispatch({ type: 'success', value: localStorage.removeItem('token') });
+    }
+
     return (
         <div className="bg-white shadow rounded basis-[100%] lg:basis-[30%] mx-auto md:mx-0 px-8 pt-6 pb-8">
-            <img src="/images/profile-picture.webp" className="rounded-full block w-24 mx-auto" alt="profile_pic" />
+            <img src={user.profilePic} className="rounded-full block w-20 mx-auto" alt="profile_pic" />
             <div className="text-center">
-                <h1 className="font-bold text-green-500 mt-4">Abdul Halim</h1>
+                <h1 className="font-bold text-green-500 mt-4">{user.name}</h1>
                 <p className="text-slate-500 text-sm">Front-End Developer</p>
             </div>
             <div className="text-center mt-4">
@@ -26,6 +39,9 @@ const Sidebar = () => {
                 <button className="text-xs border border-slate-300 bg-slate-100 text-green-500 rounded-full font-medium px-5 py-2 mt-3 mr-3">Sass</button>
                 <button className="text-xs border border-slate-300 bg-slate-100 text-green-500 rounded-full font-medium px-5 py-2 mt-3 mr-3">Tailwind</button>
                 <button className="text-xs border border-slate-300 bg-slate-100 text-green-500 rounded-full font-medium px-5 py-2 mt-3 mr-3">Bootstrap</button>
+            </div>
+            <div className="mt-8 pt-4 border-t text-center">
+                <button type="button" onClick={handleLogout} className="text-sm font-medium text-sky-600">Logout</button>
             </div>
         </div>
     );

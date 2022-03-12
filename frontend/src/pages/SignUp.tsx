@@ -1,50 +1,93 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useState } from 'react';
+import { Link, useNavigate, NavigateFunction } from 'react-router-dom';
+import axios, { AxiosResponse, AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { useGlobalState, useGlobalDispatch } from '../context/userContext';
 
 const SignUp = () => {
 
-  useEffect(() => {
-    const userSignup = async() => {
-      const data = await axios.post('/api/v1/auth/signup');
-      console.log(data);
-    };
-    userSignup();
-  }, []);
+  const [user, setUser] = useState({
+    name: '',
+    age: 0,
+    email: '',
+    password: ''
+  });
+
+  const { isToken }: any = useGlobalState();
+  const dispatch: any = useGlobalDispatch();
+
+  const navigate: NavigateFunction = useNavigate();
+
+  const handleInputChange = (e: React.FormEvent<EventTarget>) => {
+    const {name, value} = e.target as HTMLInputElement;
+    setUser({ ...user, [name]: value });
+  };
+
+  if (isToken) {
+    navigate('/profile');
+  }
+
+  const userSignup = async() => {
+    try {
+      const res: AxiosResponse<any> = await axios.post('/api/v1/auth/signup', user);
+      if (res.status === 201) {
+        toast.success('Account created successfully!');
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem("users", JSON.stringify(res.data));
+        dispatch({ type: 'success', value: localStorage.getItem('token') });
+        const user: any = localStorage.getItem('user');
+        dispatch({ type: 'user', value: JSON.parse(user) });
+        navigate('/profile');
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response) {
+        toast.error(err.response?.data.message);
+        dispatch({ type: 'success', value: '' });
+        dispatch({ type: 'user', value: {} });
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
-    console.log(123);
-    
+    userSignup();
+    setUser({
+      name: '',
+      age: 0,
+      email: '',
+      password: ''
+    });
   }
 
   return (
     <form onSubmit={handleSubmit} className="bg-white shadow-md rounded w-[85%] sm:w-[55%] md:w-[45%] lg:w-[30%] xl:w-[30%] 2xl:w-[25%] mx-auto px-8 pt-6 pb-8 my-6">
       <p className="text-center text-slate-600 border-b text-2xl font-bold pb-2 mb-5">Create Account</p>
       <div className="mb-3">
-        <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="name">Name</label>
-        <input className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="name" type="text" placeholder="Enter full name" />
-        {/* <p className="text-red-500 text-xs italic">Please enter your name</p> */}
+        <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="name">
+          Name <span className="text-red-500">*</span>
+        </label>
+        <input name="name" value={user.name} onChange={handleInputChange} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="name" type="text" placeholder="Enter full name" />
+      </div>
+      <div className="mb-3">
+        <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="email">
+          Email <span className="text-red-500">*</span>
+        </label>
+        <input name="email" value={user.email} onChange={handleInputChange} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="email" type="email" placeholder="Enter email address" />
+      </div>
+      <div className="mb-3">
+        <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="password">
+          Password <span className="text-red-500">*</span>
+        </label>
+        <input name="password" value={user.password} onChange={handleInputChange} className="shadow appearance-none border border-red rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="password" type="password" placeholder="Enter password" />
       </div>
       <div className="mb-3">
         <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="age">Age</label>
-        <input className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="age" type="number" placeholder="Enter age" />
-        {/* <p className="text-red-500 text-xs italic">Decimal number not allowed</p> */}
+        <input name="age" value={user.age} onChange={handleInputChange} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="age" type="number" placeholder="Enter age" />
       </div>
       <div className="mb-3">
-        <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="email">Email</label>
-        <input className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="email" type="email" placeholder="Enter email address" />
-        {/* <p className="text-red-500 text-xs italic">Please enter your valid email address</p> */}
-      </div>
-      <div className="mb-4">
-        <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="password">Password</label>
-        <input className="shadow appearance-none border border-red rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="password" type="password" placeholder="Enter password" />
-        {/* <p className="text-red-500 text-xs italic">Please enter your password</p> */}
-      </div>
-      <div className="mb-4">
         <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="profilePic">Profile Picture</label>
         <input className="shadow appearance-none border border-red rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="profilePic" type="file" />
-        {/* <p className="text-red-500 text-xs italic">Please upload png or jpg format</p> */}
       </div>
       <button type="submit" className="bg-green-500 text-white font-bold w-full py-2 rounded">
         Sign Up

@@ -3,16 +3,14 @@ import  asyncHandler from 'express-async-handler';
 import User from '../models/User';
 import generateToken from '../config/generateToken';
 
-export const userSignup: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+export const userSignup: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
     const { name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, experiences, skills } = req.body;
     if (!name || !email || !password) {
-        res.status(400);
-        throw new Error('Please enter all the required fields');
+        return res.status(400).json({ success: 0, message: 'Please enter all the required fields!'});
     }
     const userExists = await User.findOne({ email });
     if (userExists) {
-        res.status(400);
-        throw new Error('User already exists');
+        return res.status(400).json({ success: 0, message: 'User already exists!'});
     }
     const user = await User.create({ name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, experiences, skills });
     if (user) {
@@ -32,12 +30,11 @@ export const userSignup: RequestHandler = asyncHandler(async (req: Request, res:
             token: generateToken(user._id)
         });
     } else {
-        res.status(400);
-        throw new Error('Failed to create the user');
+        return res.status(500).json({ success: 0, message: 'Failed to create the user!'});
     }
 });
 
-export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
     const { email, password } = req.body;
     const user: any = await User.findOne({ email });
     if (user && (await user.matchPassword(password))) {
@@ -57,7 +54,28 @@ export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: 
             token: generateToken(user._id)
         });
     } else {
-        res.status(401);
-        throw new Error('Invalid email or password');
+        return res.status(401).json({ success: 0, message: 'Invalid email or password!'});
     }
+});
+
+export const getUserData: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => 
+{   const user = await User.findById({ _id: req.params.id }).select('-password');
+    if (user) {
+        res.status(200).json({ success: 1, user });
+    } else {
+        return res.status(500).json({ success: 0, message: 'Profile Update failed!'});
+    }
+});
+
+export const userInfoUpdate: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => 
+{   const user = await User.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
+    if (user) {
+        res.status(200).json({ message: 'Profile Updated successfully!' });
+    } else {
+        return res.status(500).json({ success: 0, message: 'Profile Update failed!'});
+    }
+});
+
+export const userProfile: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+    res.status(200).json({ message: 'Profile access successfully!' });
 });
