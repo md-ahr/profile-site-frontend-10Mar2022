@@ -8,9 +8,9 @@ interface User {
     profilePic: string;
     bio: string;
     phone: string;
-    age: number;
+    age: string;
     userDesignation: string;
-    userExperience: number;
+    userExperience: string;
     userLocation: string;
     experiences: Types.ObjectId;
     skills: string[];
@@ -39,22 +39,25 @@ const userSchema: Schema = new Schema<User>({
     },
     bio: {
         type: String,
-        trim: true
+        trim: true,
+        default: ''
     },
     phone: {
         type: String,
         trim: true
     },
     age: {
-        type: Number
-    },
-    userDesignation: {
         type: String,
         trim: true
     },
+    userDesignation: {
+        type: String,
+        trim: true,
+        default: ''
+    },
     userExperience: {
-        type: Number,
-        default: 0
+        type: String,
+        trim: true
     },
     userLocation: {
         type: String,

@@ -16,7 +16,11 @@ const BasicInfo = () => {
         <div className="flex flex-wrap">
             <div className="mt-5 w-[100%] sm:w-[50%] lg:w-[33%]">
               <p className="text-sm sm:text-md text-slate-500 font-medium uppercase">Age</p>
-              <p className="text-sm sm:text-md text-slate-700 font-bold">{user.age} Years</p>
+              {user.age ? (
+                <p className="text-sm sm:text-md text-slate-700 font-bold">{user.age} Years</p>
+              ) : (
+                <p className="text-sm text-slate-400 font-medium">Not available</p>
+              )}
             </div>
             <div className="mt-5 w-[100%] sm:w-[50%] lg:w-[33%]">
               <p className="text-sm sm:text-md text-slate-500 font-medium uppercase">Years of Experience</p>

@@ -2,7 +2,7 @@ import { FaRegEdit } from 'react-icons/fa';
 import { useState } from 'react';
 import { Modal } from 'react-responsive-modal';
 import { toast } from 'react-toastify';
-import { useGlobalState } from '../context/userContext';
+import { useGlobalState, useGlobalDispatch } from '../context/userContext';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
 const ModalBox = () => {
@@ -10,31 +10,29 @@ const ModalBox = () => {
     const onOpenModal = () => setOpen(true);
     const onCloseModal = () => setOpen(false);
 
-    const { user }: any = useGlobalState();
+    const { user, id, token }: any = useGlobalState();
+    const dispatch: any = useGlobalDispatch();
 
-    const [userInfo, setUserInfo] = useState({
-        age: user.age,
-        userExperience: 0,
-        phone: '',
-        email: user.email,
-        userLocation: ''
-    });
-
-    const handleInputChange = (e: React.FormEvent<EventTarget>) => {
-        const {name, value} = e.target as HTMLInputElement;
-        setUserInfo({ ...userInfo, [name]: value });
-    };
+    const [age, setAge] = useState(user.age);
+    const [userExperience, setUserExperience] = useState(user.userExperience);
+    const [phone, setPhone] = useState(user.phone);
+    const [userLocation, setUserLocation] = useState(user.userLocation);
 
     const userInfoUpdate = async() => {
         try {
-          const res: AxiosResponse<any> = await axios.put('/api/v1/auth/user', user);
+          const res: AxiosResponse<any> = await axios.patch(`/api/v1/auth/user/${id}`, { age, userExperience, phone, userLocation}, { headers: { 'Authorization': `Bearer ${token}` } });
           if (res.status === 200) {
             toast.success(res.data.message);
+            localStorage.setItem('user', JSON.stringify(res.data.user));
+            const user: any = localStorage.getItem('user');
+            dispatch({ type: 'success', value: { user: JSON.parse(user), id, token } });
+            setOpen(false);
           }
         } catch (error) {
           const err = error as AxiosError;
           if (err.response) {
             toast.error(err.response?.data.message);
+            dispatch({ type: 'failure', value: { user: {}, token: '', id: '' } });
           }
         }
     };
@@ -42,13 +40,6 @@ const ModalBox = () => {
     const handleSubmit = (e: React.FormEvent<EventTarget>) => {
         e.preventDefault();
         userInfoUpdate();
-        setUserInfo({
-            age: user.age,
-            userExperience: 0,
-            phone: '',
-            email: user.email,
-            userLocation: ''
-        });
     };
 
     return (
@@ -61,24 +52,20 @@ const ModalBox = () => {
                    <div className="flex mb-3">
                         <div>
                             <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="age">Age</label>
-                            <input name="age" value={userInfo.age} onChange={handleInputChange} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="age" type="number" />
+                            <input name="age" value={age} onChange={(e) => setAge(e.target.value)} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="age" type="text" />
                         </div>
                         <div className="ml-6">
                             <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="userExperience">Experience</label>
-                            <input name="userExperience" value={userInfo.userExperience} onChange={handleInputChange} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="userExperience" type="number" />
+                            <input name="userExperience" value={userExperience} onChange={(e) => setUserExperience(e.target.value)} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="userExperience" type="text" />
                         </div>
                     </div>
                     <div className="mb-3">
                         <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="age">Phone</label>
-                        <input name="phone" value={userInfo.phone} onChange={handleInputChange} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="phone" type="text" />
-                    </div>
-                    <div className="mb-3">
-                        <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="age">Email</label>
-                        <input name="email" value={userInfo.email} onChange={handleInputChange} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="email" type="email" disabled />
+                        <input name="phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="phone" type="text" />
                     </div>
                     <div className="mb-3">
                         <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="userLocation">Location</label>
-                        <input name="userLocation" value={userInfo.userLocation} onChange={handleInputChange} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="userLocation" type="text" />
+                        <input name="userLocation" value={userLocation} onChange={(e) => setUserLocation(e.target.value)} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="userLocation" type="text" />
                     </div>
                     <button type="submit" className="bg-green-500 text-white font-bold w-full py-2 rounded">
                         Update

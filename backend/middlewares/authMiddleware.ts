@@ -19,7 +19,7 @@ const protect: RequestHandler = asyncHandler(async (req: AuthRequest, res: Respo
             return res.status(401).json({ success: 0, message: 'User not authorized!' });
         }
     } else {
-        return res.status(401).json({ success: 0, message: 'Unauthorized user, no toekn found!' });
+        return res.status(401).json({ success: 0, message: 'Unauthorized user, no token found!' });
     }
 });
 

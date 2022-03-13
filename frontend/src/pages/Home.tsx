@@ -1,24 +1,30 @@
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { useGlobalDispatch } from '../context/userContext';
+import { useGlobalState, useGlobalDispatch } from '../context/userContext';
 import Sidebar from '../components/Sidebar';
 import MainContent from '../components/MainContent';
 
 const Home = () => {
 
+  const {id} = useParams()
+
+  const { token }: any = useGlobalState();
   const dispatch: any = useGlobalDispatch();
 
   const getUserData = async() => {
     try {
-      const res: AxiosResponse<any> = await axios.get('/api/v1/auth/user');
+      const res: AxiosResponse<any> = await axios.get(`/api/v1/auth/user/${id}`, { headers: { 'Authorization': `Bearer ${token}` }});
       if (res.status === 200) {
-        localStorage.setItem('token', res.data.token);
-        // dispatch({ type: 'success', value: localStorage.getItem('token') });
+        dispatch({ type: 'user', value: {} });
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        const user: any = localStorage.getItem('user');
+        dispatch({ type: 'success', value: { user: JSON.parse(user), id, token } });
       }
     } catch (error) {
       const err = error as AxiosError;
       if (err.response) {
-        // dispatch({ type: 'success', value: '' });
+        console.log(err);
       }
     }
   };

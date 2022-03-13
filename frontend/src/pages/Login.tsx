@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate, NavigateFunction } from 'react-router-dom';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { toast } from 'react-toastify';
-import { useGlobalState, useGlobalDispatch } from '../context/userContext';
+import { useGlobalDispatch } from '../context/userContext';
 
 const Login = () => {
 
@@ -12,7 +12,6 @@ const Login = () => {
     password: ''
   });
 
-  const { isToken }: any = useGlobalState();
   const dispatch: any = useGlobalDispatch();
 
   const navigate: NavigateFunction = useNavigate();
@@ -22,24 +21,21 @@ const Login = () => {
     setUser({ ...user, [name]: value });
   };
 
-  if (isToken) {
-    navigate('/profile');
-  }
-
   const userLogin = async() => {
     try {
       const res: AxiosResponse<any> = await axios.post('/api/v1/auth/login', user);
       if (res.status === 200) {
         toast.success(res.data.message);
         localStorage.setItem('token', res.data.token);
-        dispatch({ type: 'success', value: localStorage.getItem('token') });
-        navigate('/profile');
+        localStorage.setItem('id', res.data.id);
+        dispatch({ type: 'success', value: { user: {}, token: res.data.token, id: res.data.id } });
+        navigate(`/profile/${res.data.id}`);
       }
     } catch (error) {
       const err = error as AxiosError;
       if (err.response) {
         toast.error(err.response?.data.message);
-        dispatch({ type: 'success', value: '' });
+        dispatch({ type: 'failure', value: { user: {}, token: '', id: '' } });
       }
     }
   };
@@ -54,7 +50,7 @@ const Login = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded w-[80%] sm:w-[50%] md:w-[35%] lg:w-[30%] xl:w-[25%] 2xl:w-[20%] mx-auto px-8 pt-6 pb-8">
+    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded w-[85%] sm:w-[50%] md:w-[35%] lg:w-[30%] xl:w-[25%] 2xl:w-[20%] mx-auto px-8 pt-6 pb-8">
       <div className="text-5xl border-2 border-slate-400 rounded-full w-fit p-3 mx-auto mb-4">
         <FaRegUser className="text-slate-500" />
       </div>

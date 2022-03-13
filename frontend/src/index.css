@@ -20,5 +20,41 @@
 }
 
 .react-responsive-modal-modal {
-  width: 25%;
+  width: 88%;
+}
+
+@media screen and (min-width: 425px) {
+  .react-responsive-modal-modal {
+    width: 80%;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .react-responsive-modal-modal {
+    width: 55%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .react-responsive-modal-modal {
+    width: 45%;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .react-responsive-modal-modal {
+    width: 35%;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .react-responsive-modal-modal {
+    width: 28%;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .react-responsive-modal-modal {
+    width: 25%;
+  }
 }

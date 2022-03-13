@@ -14,9 +14,10 @@ export const userSignup: RequestHandler = asyncHandler(async (req: Request, res:
     }
     const user = await User.create({ name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, experiences, skills });
     if (user) {
-        res.status(200).json({
+        res.status(201).json({
             success: 1,
             message: 'User account created successfully!',
+            id: user._id,
             email: user.email,
             token: generateToken(user._id)
         });
@@ -32,6 +33,7 @@ export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: 
         res.status(200).json({
             success: 1,
             message: 'User logged in successfully!',
+            id: user._id,
             email: user.email,
             token: generateToken(user._id)
         });
@@ -40,7 +42,7 @@ export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: 
     }
 });
 
-export const getUserData: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => 
+export const getUserData: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> =>
 {   const user = await User.findById(req.params.id).select('-password');
     if (user) {
         res.status(200).json({ success: 1, user });
@@ -49,15 +51,12 @@ export const getUserData: RequestHandler = asyncHandler(async (req: Request, res
     }
 });
 
-export const userInfoUpdate: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => 
-{   const user = await User.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
+export const userInfoUpdate: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+    const { age, userExperience, phone, userLocation, userDesignation, bio, skills } = req.body;
+    const user = await User.findByIdAndUpdate({ _id: req.params.id }, { age, userExperience, phone, userLocation, userDesignation, bio, skills}, { new: true });
     if (user) {
-        res.status(200).json({ message: 'Profile Updated successfully!' });
+        res.status(200).json({ message: 'Profile Updated successfully!', user });
     } else {
         return res.status(404).json({ success: 0, message: `No user found with this id - ${req.params.id}`});
     }
-});
-
-export const userProfile: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
-    res.status(200).json({ message: 'Profile access successfully!' });
 });
