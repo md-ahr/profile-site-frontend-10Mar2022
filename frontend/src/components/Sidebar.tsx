@@ -33,7 +33,7 @@ const Sidebar = () => {
             {user.bio ? (
                 <p className="text-slate-500 text-sm text-center leading-5 tracking-wide my-6">{user.bio}</p>
             ) : (
-                <p className="text-sm text-slate-400 font-medium">Bio Not Available</p>
+                <p className="text-sm text-slate-400 font-medium text-center my-6">Bio Not Available</p>
             )}
             <SkillList />
             <div className="mt-8 pt-4 border-t text-center">

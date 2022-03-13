@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/dbConfig';
 import { notFound, errorHandler } from './middlewares/appErrorHandler';
 import authRoute from './routes/authRoute';
+import experienceRoute from './routes/experienceRoute';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(`${API_PREFIX}/auth`, authRoute);
+app.use(`${API_PREFIX}/experiences`, experienceRoute);
 
 app.use(notFound);
 app.use(errorHandler);

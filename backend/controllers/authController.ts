@@ -43,7 +43,8 @@ export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: 
 });
 
 export const getUserData: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> =>
-{   const user = await User.findById(req.params.id).select('-password');
+{
+    const user = await User.findOne({ _id: req.params.id }).populate('experiences');
     if (user) {
         res.status(200).json({ success: 1, user });
     } else {

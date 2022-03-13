@@ -1,4 +1,4 @@
-import { Schema, Types, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 interface User {
@@ -12,7 +12,7 @@ interface User {
     userDesignation: string;
     userExperience: string;
     userLocation: string;
-    experiences: Types.ObjectId;
+    experiences: Schema.Types.ObjectId;
     skills: string[];
 };
 
