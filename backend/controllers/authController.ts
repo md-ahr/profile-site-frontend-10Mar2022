@@ -14,19 +14,10 @@ export const userSignup: RequestHandler = asyncHandler(async (req: Request, res:
     }
     const user = await User.create({ name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, experiences, skills });
     if (user) {
-        res.status(201).json({
-            _id: user._id,
-            name: user.name,
+        res.status(200).json({
+            success: 1,
+            message: 'User account created successfully!',
             email: user.email,
-            profilePic: user.profilePic,
-            bio: user.bio,
-            phone: user.phone,
-            age: user.age,
-            userDesignation: user.userDesignation,
-            userExperience: user.userExperience,
-            userLocation: user.userLocation,
-            experiences: user.experiences,
-            skills: user.skills,
             token: generateToken(user._id)
         });
     } else {
@@ -39,18 +30,9 @@ export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: 
     const user: any = await User.findOne({ email });
     if (user && (await user.matchPassword(password))) {
         res.status(200).json({
-            _id: user._id,
-            name: user.name,
+            success: 1,
+            message: 'User logged in successfully!',
             email: user.email,
-            profilePic: user.profilePic,
-            bio: user.bio,
-            phone: user.phone,
-            age: user.age,
-            userDesignation: user.userDesignation,
-            userExperience: user.userExperience,
-            userLocation: user.userLocation,
-            experiences: user.experiences,
-            skills: user.skills,
             token: generateToken(user._id)
         });
     } else {
@@ -59,11 +41,11 @@ export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: 
 });
 
 export const getUserData: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => 
-{   const user = await User.findById({ _id: req.params.id }).select('-password');
+{   const user = await User.findById(req.params.id).select('-password');
     if (user) {
         res.status(200).json({ success: 1, user });
     } else {
-        return res.status(500).json({ success: 0, message: 'Profile Update failed!'});
+        return res.status(404).json({ success: 0, message: `No user found with this id - ${req.params.id}` });
     }
 });
 
@@ -72,7 +54,7 @@ export const userInfoUpdate: RequestHandler = asyncHandler(async (req: Request, 
     if (user) {
         res.status(200).json({ message: 'Profile Updated successfully!' });
     } else {
-        return res.status(500).json({ success: 0, message: 'Profile Update failed!'});
+        return res.status(404).json({ success: 0, message: `No user found with this id - ${req.params.id}`});
     }
 });
 

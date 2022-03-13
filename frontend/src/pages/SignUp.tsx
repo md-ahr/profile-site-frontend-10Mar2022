@@ -31,12 +31,9 @@ const SignUp = () => {
     try {
       const res: AxiosResponse<any> = await axios.post('/api/v1/auth/signup', user);
       if (res.status === 201) {
-        toast.success('Account created successfully!');
+        toast.success(res.data.message);
         localStorage.setItem('token', res.data.token);
-        localStorage.setItem("users", JSON.stringify(res.data));
         dispatch({ type: 'success', value: localStorage.getItem('token') });
-        const user: any = localStorage.getItem('user');
-        dispatch({ type: 'user', value: JSON.parse(user) });
         navigate('/profile');
       }
     } catch (error) {
@@ -44,7 +41,6 @@ const SignUp = () => {
       if (err.response) {
         toast.error(err.response?.data.message);
         dispatch({ type: 'success', value: '' });
-        dispatch({ type: 'user', value: {} });
       }
     }
   };
