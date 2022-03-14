@@ -2,6 +2,7 @@ import { toast } from 'react-toastify';
 import { useGlobalState, useGlobalDispatch } from '../context/userContext';
 import BioModal from './BioModal';
 import SkillList from './SkillList';
+import { imagePathUrl } from '../Constant';
 
 const Sidebar = () => {
 
@@ -18,7 +19,7 @@ const Sidebar = () => {
 
     return (
         <div className="bg-white shadow rounded basis-[100%] lg:basis-[30%] mx-auto md:mx-0 px-8 pt-6 pb-8">
-            <img src={user.profilePic} className="rounded-full block w-20 mx-auto" alt="profile_pic" />
+            <img src={`${user.profilePic}`} className="border-2 rounded-full block w-[85px] h-[85px] object-contain p-1 mx-auto" alt="profile_pic" />
             <div className="text-center">
                 <h1 className="font-bold text-green-500 mt-4">{user.name}</h1>
                 {user.userDesignation ? (

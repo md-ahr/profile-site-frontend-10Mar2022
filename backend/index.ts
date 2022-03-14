@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import formidable from 'express-formidable';
 import connectDB from './config/dbConfig';
 import { notFound, errorHandler } from './middlewares/appErrorHandler';
 import authRoute from './routes/authRoute';
@@ -18,6 +19,8 @@ const app: Application = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(formidable());
+app.use('/images', express.static(__dirname + '/uploads'));
 
 app.use(`${API_PREFIX}/auth`, authRoute);
 app.use(`${API_PREFIX}/experiences`, experienceRoute);

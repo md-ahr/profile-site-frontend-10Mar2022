@@ -32,7 +32,6 @@ const ModalBox = () => {
           const err = error as AxiosError;
           if (err.response) {
             toast.error(err.response?.data.message);
-            dispatch({ type: 'failure', value: { user: {}, token: '', id: '' } });
           }
         }
     };

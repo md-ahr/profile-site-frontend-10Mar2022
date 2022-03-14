@@ -4,7 +4,7 @@ import User from '../models/User';
 import generateToken from '../config/generateToken';
 
 export const userSignup: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
-    const { name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, experiences, skills } = req.body;
+    const { name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, skills } = req.body;
     if (!name || !email || !password) {
         return res.status(400).json({ success: 0, message: 'Please enter all the required fields!'});
     }
@@ -12,7 +12,7 @@ export const userSignup: RequestHandler = asyncHandler(async (req: Request, res:
     if (userExists) {
         return res.status(400).json({ success: 0, message: 'User already exists!'});
     }
-    const user = await User.create({ name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, experiences, skills });
+    const user = await User.create({ name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, skills });
     if (user) {
         res.status(201).json({
             success: 1,
@@ -42,8 +42,7 @@ export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: 
     }
 });
 
-export const getUserData: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> =>
-{
+export const getUserData: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
     const user = await User.findOne({ _id: req.params.id }).populate('experiences');
     if (user) {
         res.status(200).json({ success: 1, user });
@@ -52,9 +51,15 @@ export const getUserData: RequestHandler = asyncHandler(async (req: Request, res
     }
 });
 
-export const userInfoUpdate: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+export const userInfoUpdate: RequestHandler = asyncHandler(async (req: Request | any, res: Response): Promise<any> => {
+    let user;
     const { age, userExperience, phone, userLocation, userDesignation, bio, skills } = req.body;
-    const user = await User.findByIdAndUpdate({ _id: req.params.id }, { age, userExperience, phone, userLocation, userDesignation, bio, skills}, { new: true });
+    if (req.files && req.files.length > 0) {
+        const { filename } = req.files[0];
+        user = await User.findByIdAndUpdate({ _id: req.params.id }, { age, userExperience, phone, userLocation, userDesignation, bio, skills, profilePic: filename}, { new: true });
+    } else {
+        user = await User.findByIdAndUpdate({ _id: req.params.id }, { age, userExperience, phone, userLocation, userDesignation, bio, skills}, { new: true });
+    }
     if (user) {
         res.status(200).json({ message: 'Profile Updated successfully!', user });
     } else {

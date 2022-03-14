@@ -38,13 +38,20 @@ const experienceSchema: Schema = new Schema<Experience>({
     endDate: {
         type: String,
         trim: true,
-        required: true
+        default: 'Present'
     },
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'Experience'
+        ref: 'User',
+        required: true
     },
 }, { timestamps: true });
+
+experienceSchema.methods.toJSON = function () {
+    let obj = this.toObject();
+    delete obj.userId;
+    return obj;
+};
 
 const Experience = model<Experience>('Experience', experienceSchema);
 

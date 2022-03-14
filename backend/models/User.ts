@@ -12,7 +12,7 @@ interface User {
     userDesignation: string;
     userExperience: string;
     userLocation: string;
-    experiences: Schema.Types.ObjectId;
+    experiences: any[];
     skills: string[];
 };
 

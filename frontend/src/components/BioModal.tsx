@@ -15,24 +15,28 @@ const BioModal = () => {
 
     const [userDesignation, setUserDesignation] = useState(user.userDesignation);
     const [bio, setBio] = useState(user.bio);
+    const [profilePic, setProfilePic] = useState(user.profilePic);
 
     const userInfoUpdate = async() => {
-        try {
-          const res: AxiosResponse<any> = await axios.patch(`/api/v1/auth/user/${id}`, { userDesignation, bio }, { headers: { 'Authorization': `Bearer ${token}` } });
-          if (res.status === 200) {
-            toast.success(res.data.message);
-            localStorage.setItem('user', JSON.stringify(res.data.user));
-            const user: any = localStorage.getItem('user');
-            dispatch({ type: 'success', value: { user: JSON.parse(user), id, token } });
-            setOpen(false);
-          }
-        } catch (error) {
-          const err = error as AxiosError;
-          if (err.response) {
-            toast.error(err.response?.data.message);
-            dispatch({ type: 'failure', value: { user: {}, token: '', id: '' } });
-          }
+      const formData = new FormData();
+      formData.append('userDesignation', userDesignation);
+      formData.append('bio', bio);
+      formData.append('profilePic', profilePic);
+      try {
+        const res: AxiosResponse<any> = await axios.patch(`/api/v1/auth/user/${id}`, formData, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (res.status === 200) {
+          toast.success(res.data.message);
+          localStorage.setItem('user', JSON.stringify(res.data.user));
+          const user: any = localStorage.getItem('user');
+          dispatch({ type: 'success', value: { user: JSON.parse(user), id, token } });
+          setOpen(false);
         }
+      } catch (error) {
+        const err = error as AxiosError;
+        if (err.response) {
+          toast.error(err.response?.data.message);
+        }
+      }
     };
 
     const handleSubmit = (e: React.FormEvent<EventTarget>) => {
@@ -56,7 +60,7 @@ const BioModal = () => {
                     </div>
                     <div className="mb-3">
                         <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="propfilePic">Profile Picture</label>
-                        <input name="propfilePic" className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="propfilePic" type="file" />
+                        <input name="propfilePic" onChange={(e: React.FormEvent<HTMLInputElement> | any) => setProfilePic(e.target.files[0])} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="propfilePic" type="file" />
                     </div>
                     <button type="submit" className="bg-green-500 text-white font-bold w-full py-2 rounded">
                         Submit
