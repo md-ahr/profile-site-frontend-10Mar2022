@@ -2,16 +2,15 @@ import { useState } from 'react';
 import { Modal } from 'react-responsive-modal';
 import { toast } from 'react-toastify';
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { useGlobalState, useGlobalDispatch } from '../context/userContext';
+import { useGlobalState } from '../context/userContext';
 
-const AddExperienceModal = () => {
+const AddExperienceModal = (props: any) => {
 
   const [open, setOpen] = useState(false);
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
-  const { id, token }: any = useGlobalState();
-  const dispatch: any = useGlobalDispatch();
+  const { token, user }: any = useGlobalState();
 
   const [isChecked, setIsChecked] = useState(false);
 
@@ -20,8 +19,8 @@ const AddExperienceModal = () => {
   const [location, setLocation] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [userId, setUserId] = useState(user._id);
   const [companyLogo, setCompanyLogo] = useState('');
-  const [userId, setUserId] = useState(id);
 
   const handleCheckInput = (e: React.FormEvent<EventTarget> | any) => {
     if (e.target.checked) {
@@ -45,6 +44,7 @@ const AddExperienceModal = () => {
       if (res.status === 201) {
         toast.success(res.data.message);
         setOpen(false);
+        props.handleUpdateData();
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -54,8 +54,7 @@ const AddExperienceModal = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<EventTarget>) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     addExperience();
     setOpen(false);
   };
@@ -65,7 +64,7 @@ const AddExperienceModal = () => {
       <button type="button" onClick={onOpenModal} className="text-sm font-bold text-green-500 border-2 border-green-500 px-4 py-2 rounded hover:bg-green-600 hover:text-white transition ease duration-500">Add Experience</button>
       <Modal open={open} onClose={onCloseModal} center>
           <h3 className="text-lg font-medium border-b pb-3">Add Experience Information</h3>
-          <form onSubmit={handleSubmit} className="mt-4">
+          <div className="mt-4">
               <div className="mb-3">
                   <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="companyName">Company Name</label>
                   <input name="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="companyName" type="text" />
@@ -96,10 +95,10 @@ const AddExperienceModal = () => {
                   <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="companyLogo">Company Logo</label>
                   <input name="companyLogo" onChange={(e: React.FormEvent<HTMLInputElement> | any) => setCompanyLogo(e.target.files[0])} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="companyLogo" type="file" />
               </div>
-              <button type="submit" className="bg-green-500 text-white font-bold w-full py-2 rounded">
+              <button type="button" onClick={handleSubmit} className="bg-green-500 text-white font-bold w-full py-2 rounded">
                   Submit
               </button>
-          </form>
+          </div>
       </Modal>
     </>
   );

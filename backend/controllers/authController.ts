@@ -3,7 +3,8 @@ import  asyncHandler from 'express-async-handler';
 import User from '../models/User';
 import generateToken from '../config/generateToken';
 
-export const userSignup: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+export const userSignup: RequestHandler = asyncHandler(async (req: any, res: Response): Promise<any> => {
+    let user;
     const { name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, skills } = req.body;
     if (!name || !email || !password) {
         return res.status(400).json({ success: 0, message: 'Please enter all the required fields!'});
@@ -12,14 +13,18 @@ export const userSignup: RequestHandler = asyncHandler(async (req: Request, res:
     if (userExists) {
         return res.status(400).json({ success: 0, message: 'User already exists!'});
     }
-    const user = await User.create({ name, email, password, profilePic, bio, phone, age, userDesignation, userExperience, userLocation, skills });
+    if (req.files && req.files.length > 0) {
+        const { filename } = req.files[0];
+        user = await User.create({ name, email, password, profilePic: filename, bio, phone, age, userDesignation, userExperience, userLocation, skills });
+    } else {
+        user = await User.create({ name, email, password, bio, phone, age, userDesignation, userExperience, userLocation, skills });
+    }
     if (user) {
         res.status(201).json({
             success: 1,
             message: 'User account created successfully!',
-            id: user._id,
-            email: user.email,
-            token: generateToken(user._id)
+            token: generateToken(user._id),
+            user
         });
     } else {
         return res.status(500).json({ success: 0, message: 'Failed to create the user!'});
@@ -28,14 +33,13 @@ export const userSignup: RequestHandler = asyncHandler(async (req: Request, res:
 
 export const userLogin: RequestHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
     const { email, password } = req.body;
-    const user: any = await User.findOne({ email });
+    const user: any = await User.findOne({ email: email.toString() });
     if (user && (await user.matchPassword(password))) {
         res.status(200).json({
             success: 1,
             message: 'User logged in successfully!',
-            id: user._id,
-            email: user.email,
-            token: generateToken(user._id)
+            token: generateToken(user._id),
+            user
         });
     } else {
         return res.status(401).json({ success: 0, message: 'Invalid email or password!'});

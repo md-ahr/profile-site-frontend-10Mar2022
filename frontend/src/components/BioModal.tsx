@@ -10,12 +10,12 @@ const BioModal = () => {
     const onOpenModal = () => setOpen(true);
     const onCloseModal = () => setOpen(false);
 
-    const { user, id, token }: any = useGlobalState();
+    const { token, user }: any = useGlobalState();
     const dispatch: any = useGlobalDispatch();
 
-    const [userDesignation, setUserDesignation] = useState(user.userDesignation);
+    const [userDesignation, setUserDesignation] = useState(user && user.userDesignation);
     const [bio, setBio] = useState(user.bio);
-    const [profilePic, setProfilePic] = useState(user.profilePic);
+    const [profilePic, setProfilePic] = useState(user && user.profilePic);
 
     const userInfoUpdate = async() => {
       const formData = new FormData();
@@ -23,12 +23,12 @@ const BioModal = () => {
       formData.append('bio', bio);
       formData.append('profilePic', profilePic);
       try {
-        const res: AxiosResponse<any> = await axios.patch(`/api/v1/auth/user/${id}`, formData, { headers: { 'Authorization': `Bearer ${token}` } });
+        const res: AxiosResponse<any> = await axios.patch(`/api/v1/auth/user/${user._id}`, formData, { headers: { 'Authorization': `Bearer ${token}` } });
         if (res.status === 200) {
           toast.success(res.data.message);
           localStorage.setItem('user', JSON.stringify(res.data.user));
           const user: any = localStorage.getItem('user');
-          dispatch({ type: 'success', value: { user: JSON.parse(user), id, token } });
+          dispatch({ type: 'success', value: { token, user: JSON.parse(user) } });
           setOpen(false);
         }
       } catch (error) {

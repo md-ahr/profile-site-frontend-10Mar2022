@@ -26,16 +26,16 @@ const SignUp = () => {
       const res: AxiosResponse<any> = await axios.post('/api/v1/auth/signup', user);
       if (res.status === 201) {
         toast.success(res.data.message);
-        localStorage.setItem('token', res.data.token);
-        localStorage.setItem('id', res.data.id);
-        dispatch({ type: 'success', value: { user: {}, token: res.data.token, id: res.data.id } });
-        navigate(`/profile/${res.data.id}`);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        const user: any = localStorage.getItem('user');
+        dispatch({ type: 'success', value: { token: res.data.token, user: JSON.parse(user) } });
+        navigate(`/profile/${res.data.user._id}`);
       }
     } catch (error) {
       const err = error as AxiosError;
       if (err.response) {
         toast.error(err.response?.data.message);
-        dispatch({ type: 'failure', value: { user: {}, token: '', id: '' } });
+        dispatch({ type: 'failure', value: { token: '', user: '' } });
       }
     }
   };

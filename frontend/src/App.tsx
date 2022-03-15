@@ -26,7 +26,7 @@ function App(): JSX.Element {
           />
           <Routes>
             {state && state.token && <Route path="/profile/:id" element={<Home /> } />}
-            {state && state.token && <Route path="*" element={<Navigate to={`/profile/${state.id}`} />} />}
+            {state && state.token && <Route path="*" element={<Navigate to={`/profile/${state.user._id}`} />} />}
             {state && !state.token && <Route path="/login" element={<Login />} />}
             {state && !state.token && <Route path="/signup" element={<SignUp />} />}
             {state && !state.token && <Route path="*" element={<Navigate to="/login" />} />}

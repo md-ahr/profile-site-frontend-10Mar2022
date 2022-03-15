@@ -7,7 +7,7 @@ const BasicInfo = () => {
   const { user }: any = useGlobalState();
 
   return (
-    <div className="bg-white shadow rounded px-8 pt-6 pb-8 ml-0 lg:ml-0 mt-6 md:mt-0">
+    <div className="bg-white shadow rounded px-8 pt-6 pb-8 ml-0 lg:ml-0 mt-6 lg:mt-0">
         <div className="">
         <div className="flex items-center">
             <h2 className="text-slate-700 text-md md:text-xl xl:text-2xl font-bold pb-0 mb-0">Basic Information</h2>
