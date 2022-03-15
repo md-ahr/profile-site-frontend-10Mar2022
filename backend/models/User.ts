@@ -80,9 +80,9 @@ userSchema.pre('save' , async function(next: any) {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-userSchema.methods.matchPassword = async function(enteredPassword: any) {
+userSchema.methods.matchPassword = async function(enteredPassword: string) {
     return await bcrypt.compare(enteredPassword, this.password);
-}
+};
 
 const User = model<User>('User', userSchema);
 

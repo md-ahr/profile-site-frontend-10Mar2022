@@ -4,11 +4,17 @@ import User from '../models/User';
 import Experience from '../models/Experience';
 
 export const addExperience: RequestHandler = asyncHandler(async (req: any, res: Response): Promise<any> => {
-    const { companyName, designation, startDate, endDate, location, userId } = req.fields;
+    let experience;
+    const { companyName, designation, startDate, endDate, location, userId } = req.body;
     if (!companyName || !designation || !startDate || !location || !userId) {
         return res.status(400).json({ success: 0, message: 'Please enter all the required fields!'});
     }
-    const experience = await Experience.create({ companyName, designation, startDate, endDate, location, userId });
+    if (req.files && req.files.length > 0) {
+        const { filename } = req.files[0];
+        experience = await Experience.create({ companyName, designation, startDate, endDate, location, companyLogo: filename, userId });
+    } else {
+        experience = await Experience.create({ companyName, designation, startDate, endDate, location, userId });
+    }
     if (experience) {
         const user = await User.findById(userId);
         if (user) {
@@ -17,7 +23,8 @@ export const addExperience: RequestHandler = asyncHandler(async (req: any, res: 
         }
         res.status(201).json({
             success: 1,
-            message: 'Experice added successfully!'
+            message: 'Experice added successfully!',
+            user
         });
     } else {
         return res.status(500).json({ success: 0, message: 'Failed to add experiece!'});

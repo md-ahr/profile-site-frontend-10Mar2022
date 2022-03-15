@@ -28,7 +28,6 @@ const SignUp = () => {
         toast.success(res.data.message);
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('id', res.data.id);
-        dispatch({ type: 'success', value: localStorage.getItem('token') });
         dispatch({ type: 'success', value: { user: {}, token: res.data.token, id: res.data.id } });
         navigate(`/profile/${res.data.id}`);
       }

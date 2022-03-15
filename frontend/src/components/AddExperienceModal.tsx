@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Modal } from 'react-responsive-modal';
 import { toast } from 'react-toastify';
-import { useGlobalState, useGlobalDispatch } from '../context/userContext';
 import axios, { AxiosResponse, AxiosError } from 'axios';
+import { useGlobalState, useGlobalDispatch } from '../context/userContext';
 
 const AddExperienceModal = () => {
 
@@ -10,7 +10,7 @@ const AddExperienceModal = () => {
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
-  const { user, id, token }: any = useGlobalState();
+  const { id, token }: any = useGlobalState();
   const dispatch: any = useGlobalDispatch();
 
   const [isChecked, setIsChecked] = useState(false);
@@ -40,15 +40,10 @@ const AddExperienceModal = () => {
     formData.append('endDate', endDate);
     formData.append('companyLogo', companyLogo);
     formData.append('userId', userId);
-    console.log(companyName, designation, location, startDate, endDate, companyLogo, userId);
     try {
       const res: AxiosResponse<any> = await axios.post('/api/v1/experiences', formData, { headers: { 'Authorization': `Bearer ${token}` } });
       if (res.status === 201) {
-        console.log(res.data);
         toast.success(res.data.message);
-        localStorage.setItem('user', JSON.stringify(res.data.user));
-        const user: any = localStorage.getItem('user');
-        dispatch({ type: 'success', value: { user: JSON.parse(user), id, token } });
         setOpen(false);
       }
     } catch (error) {
@@ -62,6 +57,7 @@ const AddExperienceModal = () => {
   const handleSubmit = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
     addExperience();
+    setOpen(false);
   };
 
   return (

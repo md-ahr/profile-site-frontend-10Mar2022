@@ -11,10 +11,9 @@ const Sidebar = () => {
 
     const handleLogout = () => {
         toast.info('User successfully logout!');
-        localStorage.removeItem('user');
         localStorage.removeItem('id');
         localStorage.removeItem('token');
-        dispatch({ type: 'success', value: { user: {}, token: '', id: '' } });
+        dispatch({ type: 'success', value: { user, token: '', id: '' } });
     }
 
     return (
