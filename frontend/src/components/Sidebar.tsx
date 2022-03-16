@@ -2,7 +2,6 @@ import { toast } from 'react-toastify';
 import { useGlobalState, useGlobalDispatch } from '../context/userContext';
 import BioModal from './BioModal';
 import SkillList from './SkillList';
-import { imagePathUrl } from '../Constant';
 
 const Sidebar = () => {
 

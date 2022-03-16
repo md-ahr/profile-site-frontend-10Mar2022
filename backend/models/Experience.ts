@@ -4,6 +4,7 @@ interface Experience {
     companyLogo?: string;
     companyName: string;
     designation: string;
+    jobDescription: string;
     location: string;
     startDate: string;
     endDate: string;
@@ -21,6 +22,11 @@ const experienceSchema: Schema = new Schema<Experience>({
         required: true
     },
     designation: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    jobDescription: {
         type: String,
         trim: true,
         required: true

@@ -1,33 +1,57 @@
 import { Request, Response, RequestHandler } from 'express';
 import  asyncHandler from 'express-async-handler';
+import cloudinary  from 'cloudinary';
 import User from '../models/User';
 import Experience from '../models/Experience';
 
+cloudinary.v2.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
+    secure: true
+});
+
 export const addExperience: RequestHandler = asyncHandler(async (req: any, res: Response): Promise<any> => {
     let experience;
-    const { companyName, designation, startDate, endDate, location, userId } = req.body;
-    if (!companyName || !designation || !startDate || !location || !userId) {
+    const { companyName, designation, jobDescription, startDate, endDate, location, userId } = req.body;
+    if (!companyName || !designation || !jobDescription || !startDate || !location || !userId) {
         return res.status(400).json({ success: 0, message: 'Please enter all the required fields!'});
     }
+    console.log(req.files[0]);
     if (req.files && req.files.length > 0) {
-        const { filename } = req.files[0];
-        experience = await Experience.create({ companyName, designation, startDate, endDate, location, companyLogo: filename, userId });
-    } else {
-        experience = await Experience.create({ companyName, designation, startDate, endDate, location, userId });
-    }
-    if (experience) {
-        const user = await User.findById(userId);
-        if (user) {
-            user.experiences = user.experiences.concat(experience._id);
-           await user.save();
-        }
-        res.status(201).json({
-            success: 1,
-            message: 'Experice added successfully!',
-            experience
+        cloudinary.v2.uploader.upload(req.files[0].path, { overwrite: true }, async function(error: any, image: any) {
+            experience = await Experience.create({ companyName, designation, jobDescription, startDate, endDate, location, companyLogo: image.url, userId });
+            if (experience) {
+                const user = await User.findById(userId);
+                if (user) {
+                    user.experiences = user.experiences.concat(experience._id);
+                   await user.save();
+                }
+                res.status(201).json({
+                    success: 1,
+                    message: 'Experice added successfully!',
+                    experience
+                });
+            } else {
+                return res.status(500).json({ success: 0, message: 'Failed to add experiece!'});
+            }
         });
     } else {
-        return res.status(500).json({ success: 0, message: 'Failed to add experiece!'});
+        experience = await Experience.create({ companyName, designation, jobDescription, startDate, endDate, location, userId });
+        if (experience) {
+            const user = await User.findById(userId);
+            if (user) {
+                user.experiences = user.experiences.concat(experience._id);
+               await user.save();
+            }
+            res.status(201).json({
+                success: 1,
+                message: 'Experice added successfully!',
+                experience
+            });
+        } else {
+            return res.status(500).json({ success: 0, message: 'Failed to add experiece!'});
+        }
     }
 });
 
@@ -51,23 +75,32 @@ export const getSingleExperience: RequestHandler = asyncHandler(async (req: Requ
 
 export const updateExperience: RequestHandler = asyncHandler(async (req: any, res: Response): Promise<any> => {
     let experience;
-    const { companyName, designation, startDate, endDate, location, userId } = req.body;
-    if (!companyName || !designation || !startDate || !location || !userId) {
+    const { companyName, designation, jobDescription, startDate, endDate, location, userId } = req.body;
+    if (!companyName || !designation || !jobDescription || !startDate || !location || !userId) {
         return res.status(400).json({ success: 0, message: 'Please enter all the required fields!'});
     }
     if (req.files && req.files.length > 0) {
-        const { filename } = req.files[0];
-        experience = await Experience.findByIdAndUpdate({ _id: req.params.id }, { companyName, designation, startDate, endDate, location, userId, companyLogo: filename }, { new: true });
-    } else {
-        experience = await Experience.findByIdAndUpdate({ _id: req.params.id }, { companyName, designation, startDate, endDate, location, userId }, { new: true });
-    }
-    if (experience) {
-        res.status(200).json({
-            success: 1,
-            message: 'Experice Updated successfully!'
+        cloudinary.v2.uploader.upload(req.files[0].path, { overwrite: true }, async function(error: any, image: any) {
+            experience = await Experience.findByIdAndUpdate({ _id: req.params.id }, { companyName, designation, jobDescription, startDate, endDate, location, companyLogo: image.url, userId }, { new: true });
+            if (experience) {
+                res.status(200).json({
+                    success: 1,
+                    message: 'Experice Updated successfully!'
+                });
+            } else {
+                return res.status(500).json({ success: 0, message: 'Failed to update experiece!'});
+            }
         });
     } else {
-        return res.status(500).json({ success: 0, message: 'Failed to update experiece!'});
+        experience = await Experience.findByIdAndUpdate({ _id: req.params.id }, { companyName, designation, jobDescription, startDate, endDate, location, userId }, { new: true });
+        if (experience) {
+            res.status(200).json({
+                success: 1,
+                message: 'Experice Updated successfully!'
+            });
+        } else {
+            return res.status(500).json({ success: 0, message: 'Failed to update experiece!'});
+        }
     }
 });
 
