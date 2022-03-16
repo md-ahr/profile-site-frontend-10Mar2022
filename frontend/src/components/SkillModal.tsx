@@ -10,19 +10,19 @@ const SkillModal = () => {
     const onOpenModal = () => setOpen(true);
     const onCloseModal = () => setOpen(false);
 
-    const { user, id, token }: any = useGlobalState();
+    const { token, user }: any = useGlobalState();
     const dispatch: any = useGlobalDispatch();
 
     const [skills, setSkills] = useState(user.skills);
 
     const userInfoUpdate = async() => {
         try {
-          const res: AxiosResponse<any> = await axios.patch(`/api/v1/auth/user/${id}`, { skills }, { headers: { 'Authorization': `Bearer ${token}` } });
+          const res: AxiosResponse<any> = await axios.patch(`/api/v1/auth/user/${user._id}`, { skills }, { headers: { 'Authorization': `Bearer ${token}` } });
           if (res.status === 200) {
             toast.success(res.data.message);
             localStorage.setItem('user', JSON.stringify(res.data.user));
             const user: any = localStorage.getItem('user');
-            dispatch({ type: 'success', value: { user: JSON.parse(user), id, token } });
+            dispatch({ type: 'success', value: { token, user: JSON.parse(user) } });
             setOpen(false);
           }
         } catch (error) {

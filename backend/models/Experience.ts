@@ -37,8 +37,7 @@ const experienceSchema: Schema = new Schema<Experience>({
     },
     endDate: {
         type: String,
-        trim: true,
-        default: 'Present'
+        default: 'present'
     },
     userId: {
         type: Schema.Types.ObjectId,

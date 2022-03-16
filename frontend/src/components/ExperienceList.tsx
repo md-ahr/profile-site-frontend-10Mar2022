@@ -1,59 +1,65 @@
-import { FaRegEdit } from 'react-icons/fa';
-import { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { useEffect, useCallback } from 'react';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { useGlobalState, useGlobalDispatch } from '../context/userContext';
 import AddExperienceModal from './AddExperienceModal';
+import EditExperienceModal from './EditExperienceModal';
+import DeleteExperienceModal from './DeleteExperienceModal';
 
 const ExperienceList = () => {
 
-    const { user, id, token }: any = useGlobalState();
+    const { token, user, experiences }: any = useGlobalState();
     const dispatch: any = useGlobalDispatch();
 
-    const getExperiences = async() => {
-        try {
-          const res: AxiosResponse<any> = await axios.get('/api/v1/experiences', { headers: { 'Authorization': `Bearer ${token}` } });
-          if (res.status === 200) {
-            toast.success(res.data.message);
-            const userExperiences: any[] = [...user.experiences, ...res.data.experiences];
-            localStorage.setItem('user', JSON.stringify(userExperiences));
-            const userData: any = localStorage.getItem('user');
-            dispatch({ type: 'success', value: { user: JSON.parse(userData), id, token } });
-          }
-        } catch (error) {
-          const err = error as AxiosError;
-          if (err.response) {
-            toast.error(err.response?.data.message);
-          }
-        }
-      };
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-      useEffect(() => {
+    const getExperiences = useCallback(async() => {
+        try {
+            const res: AxiosResponse<any> = await axios.get(`/api/v1/experiences/user/${user._id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (res.status === 200) {
+              localStorage.setItem('experiences', JSON.stringify(res.data.userExperience.experiences));
+              const experiences: any = localStorage.getItem('experiences');
+              dispatch({ type: 'experience', value: JSON.parse(experiences) });
+            }
+          } catch (error) {
+            const err = error as AxiosError;
+            if (err.response) {
+              console.log(err);
+            }
+          }
+    }, [user._id, token]);
+
+    useEffect(() => {
+        let isSubscribed = true;
         getExperiences();
-      }, []);
+        return () => { isSubscribed = false };
+    }, [getExperiences]);
+
+    const handleUpdateData = () => {
+        getExperiences();
+    };
 
     return (
         <div className="bg-white shadow rounded px-8 pt-6 pb-8 ml-0 lg:ml-0 mt-6">
             <div className="flex items-center justify-between flex-wrap">
-                <h2 className="text-slate-700 text-md md:text-xl xl:text-2xl font-bold mb-3 sm:mb-0">Experience</h2>
+                <h2 className="text-slate-700 text-md md:text-xl xl:text-2xl font-bold mb-0">Experience</h2>
                 <div className="text-right">
-                    <AddExperienceModal />
-                    {/* <button type="button" className="text-md text-slate-500 basis-[3%] border-2 border-slate-500 px-3 py-2 ml-8 rounded hover:bg-slate-600 hover:text-slate-100 transition ease duration-500">
-                        <FaRegEdit />
-                    </button> */}
+                    <AddExperienceModal handleUpdateData={handleUpdateData} />
                 </div>
             </div>
-            {user.experiences && user.experiences.map((experience: any) => (
-                <div key={experience?._id} className="flex items-center flex-wrap border-b last:border-b-0 pb-6 last:pb-0 mt-7">
-                    <img src={experience.companyLogo} className="w-[50px] border-2 border-slate-300 rounded-full p-1 mx-auto sm:mx-0" alt={experience.companyLogo} />
-                    <div className="basis-[100%] sm:basis-[80%] text-center sm:text-left pb-6 last:pb-0 ml-0 sm:ml-8 mt-3 sm:mt-0">
+            {experiences && experiences.length  ? experiences.map((experience: any) => (
+                <div key={experience._id} className="flex flex-wrap items-center border-b last:border-b-0 pb-6 last:pb-0 mt-7">
+                    <img src={experience.companyLogo} className="w-[50px] block ml-auto mr-auto sm:mr-0 sm:ml-0 border-2 border-slate-300 rounded-full p-1" alt={experience.companyLogo} />
+                    <div className="w-[100%] sm:w-[350px] xl:w-[500px] text-center sm:text-left ml-0 md:ml-8 mt-4 sm:mt-0 sm:ml-6">
                         <p className="text-green-500 font-bold">{experience.companyName}</p>
                         <p className="text-sm text-slate-500 my-1">{experience.designation}</p>
-                        <p className="text-sm text-slate-400">{experience.startDate} - {experience.endDate} | {experience.location}</p>
+                        <p className="text-sm text-slate-400">{new Date(experience.startDate).getDate()} {months[new Date(experience.startDate).getMonth()]}, {new Date(experience.startDate).getFullYear()} - {experience.endDate ? (new Date(experience.endDate).getDate() + ' ' + months[new Date(experience.endDate).getMonth()] + ', ' + new Date(experience.endDate).getFullYear()) : 'Present'} | {experience.location}</p>
+                    </div>
+                    <div className="ml-auto mr-auto sm:ml-auto sm:mr-0 mt-4 sm:mt-0">
+                        <EditExperienceModal handleUpdateData={handleUpdateData} id={experience._id} />
+                        <DeleteExperienceModal handleUpdateData={handleUpdateData} id={experience._id} />
                     </div>
                 </div>
-            ))}
-            {!user.experiences && <p className="text-sm text-slate-500 mt-6">No experience available</p>}
+            )) : <p className="text-sm text-slate-500 mt-4">No experience available</p>}
         </div>
     );
 };
