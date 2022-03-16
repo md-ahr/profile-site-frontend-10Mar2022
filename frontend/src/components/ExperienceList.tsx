@@ -10,6 +10,8 @@ const ExperienceList = () => {
     const { token, user, experiences }: any = useGlobalState();
     const dispatch: any = useGlobalDispatch();
 
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
     const getExperiences = useCallback(async() => {
         try {
             const res: AxiosResponse<any> = await axios.get(`/api/v1/experiences/user/${user._id}`, { headers: { 'Authorization': `Bearer ${token}` } });
@@ -50,7 +52,7 @@ const ExperienceList = () => {
                     <div className="w-[100%] sm:w-[350px] xl:w-[500px] text-center sm:text-left ml-0 md:ml-8 mt-4 sm:mt-0 sm:ml-6">
                         <p className="text-green-500 font-bold">{experience.companyName}</p>
                         <p className="text-sm text-slate-500 my-1">{experience.designation}</p>
-                        <p className="text-sm text-slate-400">{experience.startDate} - {experience.endDate} | {experience.location}</p>
+                        <p className="text-sm text-slate-400">{new Date(experience.startDate).getDate()} {months[new Date(experience.startDate).getMonth()]}, {new Date(experience.startDate).getFullYear()} - {experience.endDate ? (new Date(experience.endDate).getDate() + ' ' + months[new Date(experience.endDate).getMonth()] + ', ' + new Date(experience.endDate).getFullYear()) : 'Present'} | {experience.location}</p>
                     </div>
                     <div className="ml-auto mr-auto sm:ml-auto sm:mr-0 mt-4 sm:mt-0">
                         <EditExperienceModal handleUpdateData={handleUpdateData} id={experience._id} />

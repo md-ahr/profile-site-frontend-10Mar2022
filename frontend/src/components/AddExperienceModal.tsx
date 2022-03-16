@@ -83,7 +83,7 @@ const AddExperienceModal = (props: any) => {
               </div>
               <div className="mb-3">
                   <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="endDate">End Date</label>
-                  <input name="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="endDate" type="date" disabled={isChecked} />
+                  <input name="endDate" value={isChecked ? 'Present' : endDate} onChange={(e) => setEndDate(e.target.value)} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="endDate" type={isChecked ? 'text' : 'date'} disabled={isChecked} />
               </div>
               <div className="mb-3">
                   <div className="form-check">
