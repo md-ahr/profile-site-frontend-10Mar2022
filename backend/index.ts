@@ -1,4 +1,5 @@
 import express, { Application } from 'express';
+import path from 'path';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/dbConfig';
@@ -23,6 +24,19 @@ app.use('/images', express.static(__dirname + '/uploads'));
 
 app.use(`${API_PREFIX}/auth`, authRoute);
 app.use(`${API_PREFIX}/experiences`, experienceRoute);
+
+const __dirmae1 = path.resolve();
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirmae1, '/frontend/build')));
+    app.get('*', (req, res) =>{
+        res.sendFile(path.resolve(__dirmae1, 'frontend', 'build', 'index.html'));
+    })
+} else {
+    app.get('/', (req, res) => {
+        res.send('Server running successfully on development mode!');
+    });
+}
 
 app.use(notFound);
 app.use(errorHandler);

@@ -8,7 +8,8 @@
     "preserve": "npm run build",
     "serve": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q api/index.js\"",
     "prestart": "npm run build",
-    "start": "cross-env NODE_ENV=production node api/index.js"
+    "start": "cross-env NODE_ENV=production node api/index.js",
+    "heroku-postbuild": "npm run build && NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [
     "profile",
