@@ -4,7 +4,7 @@ import path from 'path';
 function fileUploader(allowed_file_types: string[], max_file_size: number, error_msg: string) {
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, '/');
+      cb(null, '');
     },
     filename: (req, file, cb) => {
       const fileExt = path.extname(file.originalname);
