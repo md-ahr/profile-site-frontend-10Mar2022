@@ -4,7 +4,7 @@ import ModalBox from './EditModalBox';
 
 const BasicInfo = () => {
 
-  const { user }: any = useGlobalState();
+  const { user }: any = useGlobalState() || {};
 
   return (
     <div className="bg-white shadow rounded px-8 pt-6 pb-8 ml-0 lg:ml-0 mt-6 lg:mt-0">
@@ -16,7 +16,7 @@ const BasicInfo = () => {
         <div className="flex flex-wrap">
             <div className="mt-5 w-[100%] sm:w-[50%] lg:w-[33%]">
               <p className="text-sm sm:text-md text-slate-500 font-medium uppercase">Age</p>
-              {user.age ? (
+              {user && user.age ? (
                 <p className="text-sm sm:text-md text-slate-700 font-bold">{user.age} Years</p>
               ) : (
                 <p className="text-sm text-slate-400 font-medium">Not available</p>
@@ -24,7 +24,7 @@ const BasicInfo = () => {
             </div>
             <div className="mt-5 w-[100%] sm:w-[50%] lg:w-[33%]">
               <p className="text-sm sm:text-md text-slate-500 font-medium uppercase">Years of Experience</p>
-              {user.userExperience ? (
+              {user && user.userExperience ? (
                 <p className="text-sm sm:text-md text-slate-700 font-bold">{user.userExperience} Years</p>
               ) : (
                 <p className="text-sm text-slate-400 font-medium">Not available</p>
@@ -32,7 +32,7 @@ const BasicInfo = () => {
             </div>
             <div className="mt-5 w-[100%] sm:w-[50%] lg:w-[33%]">
               <p className="text-sm sm:text-md text-slate-500 font-medium uppercase">Phone</p>
-              {user.phone ? (
+              {user && user.phone ? (
                 <p className="text-sm sm:text-md text-slate-700 font-bold">{user.phone}</p>
               ) : (
                 <p className="text-sm text-slate-400 font-medium">Not available</p>
@@ -40,11 +40,11 @@ const BasicInfo = () => {
             </div>
             <div className="mt-6 w-[100%] sm:w-[50%] lg:w-[33%]">
               <p className="text-sm sm:text-md text-slate-500 font-medium uppercase">Email</p>
-              <p className="text-sm sm:text-md text-slate-700 font-bold">{user.email}</p>
+              <p className="text-sm sm:text-md text-slate-700 font-bold" role="userEmail">{user && user.email}</p>
             </div>
             <div className="mt-6 w-[100%] sm:w-[50%] lg:w-[33%]">
               <p className="text-sm sm:text-md text-slate-500 font-medium uppercase">Location</p>
-              {user.userLocation ? (
+              {user && user.userLocation ? (
                 <p className="text-sm sm:text-md text-slate-700 font-bold">{user.userLocation}</p>
               ) : (
                 <p className="text-sm text-slate-400 font-medium">Not available</p>

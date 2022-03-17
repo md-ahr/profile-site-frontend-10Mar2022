@@ -10,13 +10,13 @@ const ModalBox = () => {
     const onOpenModal = () => setOpen(true);
     const onCloseModal = () => setOpen(false);
 
-    const { token, user }: any = useGlobalState();
+    const { token, user }: any = useGlobalState() || {};
     const dispatch: any = useGlobalDispatch();
 
-    const [age, setAge] = useState(user.age);
-    const [userExperience, setUserExperience] = useState(user.userExperience);
-    const [phone, setPhone] = useState(user.phone);
-    const [userLocation, setUserLocation] = useState(user.userLocation);
+    const [age, setAge] = useState(user && user.age);
+    const [userExperience, setUserExperience] = useState(user && user.userExperience);
+    const [phone, setPhone] = useState(user && user.phone);
+    const [userLocation, setUserLocation] = useState(user && user.userLocation);
 
     const userInfoUpdate = async() => {
         try {
@@ -44,7 +44,7 @@ const ModalBox = () => {
 
     return (
         <>
-            <button type="button" onClick={onOpenModal} className="text-sm md:text-md text-slate-500 border-2 border-slate-500 px-3 py-2 ml-6 lg:ml-8 rounded hover:bg-slate-600 hover:text-slate-100 transition ease duration-500">
+            <button type="button" onClick={onOpenModal} role="edit" className="text-sm md:text-md text-slate-500 border-2 border-slate-500 px-3 py-2 ml-6 lg:ml-8 rounded hover:bg-slate-600 hover:text-slate-100 transition ease duration-500">
             <FaRegEdit /></button>
             <Modal open={open} onClose={onCloseModal} center>
                 <h3 className="text-lg font-medium border-b pb-3">Edit Basic Information</h3>
