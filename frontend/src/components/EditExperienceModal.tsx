@@ -40,6 +40,7 @@ const EditExperienceModal = (props: any) => {
                 setDesignation(res.data.experience.designation);
                 setDesignation(res.data.experience.jobDescription);
                 setLocation(res.data.experience.location);
+                setJobDescription(res.data.experience.jobDescription);
                 setStartDate(res.data.experience.startDate);
                 setEndDate(res.data.experience.endDate);
                 setCompanyLogo(res.data.experience.companyLogo);
