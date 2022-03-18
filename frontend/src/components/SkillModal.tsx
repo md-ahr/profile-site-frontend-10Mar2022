@@ -16,6 +16,10 @@ const SkillModal = () => {
     const [skills, setSkills] = useState(user.skills);
 
     const userInfoUpdate = async() => {
+        if (!skills.length) {
+            toast.error('Please provide at least one skill!');
+            return;
+        }
         try {
           const res: AxiosResponse<any> = await axios.patch(`/api/v1/auth/user/${user._id}`, { skills }, { headers: { 'Authorization': `Bearer ${token}` } });
           if (res.status === 200) {

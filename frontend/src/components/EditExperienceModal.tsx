@@ -27,6 +27,7 @@ const EditExperienceModal = (props: any) => {
     const handleCheckInput = (e: React.FormEvent<EventTarget> | any) => {
       if (e.target.checked) {
         setIsChecked(true);
+        setEndDate('Present');
       } else {
         setIsChecked(false);
       }
@@ -71,21 +72,25 @@ const EditExperienceModal = (props: any) => {
           const res: AxiosResponse<any> = await axios.patch(`/api/v1/experiences/${props.id}`, formData, { headers: { 'Authorization': `Bearer ${token}` } });
           if (res.status === 200) {
             toast.success(res.data.message);
-            setOpen(false);
             props.handleUpdateData();
+            return res.status;
           }
         } catch (error) {
-          const err = error as AxiosError;
-          if (err.response) {
-            toast.error(err.response?.data.message);
             setOpen(true);
-          }
+            const err = error as AxiosError;
+            if (err.response) {
+                toast.error(err.response?.data.message);
+            }
         }
     };
 
     const handleSubmit = () => {
-        updateExperience();
-        setOpen(false);
+        const res = updateExperience();
+        res.then((status) => {
+            if (status === 200) {
+                setOpen(false);
+            }
+        });
     };
 
     return (

@@ -19,6 +19,31 @@ const ModalBox = () => {
     const [userLocation, setUserLocation] = useState(user && user.userLocation);
 
     const userInfoUpdate = async() => {
+        if (!age) {
+            toast.error('Please provide your age!');
+            return;
+        } else if (age < 18) {
+            toast.error('Age must be greater than or equal to 18 years old!');
+            return;
+        } else if (!age.match(/^\d+$/)) {
+            toast.error('Age should be a valid number!');
+            return;
+        }
+        if (!userExperience) {
+            toast.error('Please provide your years of experience!');
+            return;
+        }
+        if (!phone) {
+            toast.error('Please provide your phone number!');
+            return;
+        } else if (!phone.match(/^\d+$/)) {
+            toast.error('Please provide your valid phone number!');
+            return;
+        }
+        if (!userLocation) {
+            toast.error('Please provide your location!');
+            return;
+        }
         try {
           const res: AxiosResponse<any> = await axios.patch(`/api/v1/auth/user/${user._id}`, { age, userExperience, phone, userLocation}, { headers: { 'Authorization': `Bearer ${token}` } });
           if (res.status === 200) {
@@ -29,17 +54,17 @@ const ModalBox = () => {
             setOpen(false);
           }
         } catch (error) {
-          const err = error as AxiosError;
-          if (err.response) {
-            toast.error(err.response?.data.message);
-          }
+            setOpen(true);
+            const err = error as AxiosError;
+            if (err.response) {
+                toast.error(err.response?.data.message);
+            }
         }
     };
 
     const handleSubmit = (e: React.FormEvent<EventTarget>) => {
         e.preventDefault();
         userInfoUpdate();
-        setOpen(false);
     };
 
     return (
@@ -56,7 +81,7 @@ const ModalBox = () => {
                         </div>
                         <div className="ml-6">
                             <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="userExperience">Experience</label>
-                            <input name="userExperience" value={userExperience} onChange={(e) => setUserExperience(e.target.value)} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="userExperience" type="text" />
+                            <input name="userExperience" value={userExperience} onChange={(e) => setUserExperience(e.target.value)} className="shadow appearance-none border rounded text-sm w-full py-2 px-3 text-grey-darker mb-2" id="userExperience" type="number" />
                         </div>
                     </div>
                     <div className="mb-3">

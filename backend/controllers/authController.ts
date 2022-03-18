@@ -13,15 +13,16 @@ cloudinary.v2.config({
 });
 
 export const userSignup: RequestHandler = asyncHandler(async (req: any, res: Response): Promise<any> => {
-    const { name, email, password, bio, phone, age, userDesignation, userExperience, userLocation, skills } = req.body;
+    let { name, email, password, bio, phone, age, userDesignation, userExperience, userLocation, skills } = req.body;
     if (!name || !email || !password) {
         return res.status(400).json({ success: 0, message: 'Please enter all the required fields!'});
     }
     const userExists = await User.findOne({ email });
+    password = await bcrypt.hash(password, 12);
     if (userExists) {
         return res.status(400).json({ success: 0, message: 'User already exists!'});
     }
-    const user = await User.create({ name, email, password: bcrypt.hash(password, 12), bio, phone, age, userDesignation, userExperience, userLocation, skills });
+    const user = await User.create({ name, email, password, bio, phone, age, userDesignation, userExperience, userLocation, skills });
     if (user) {
         res.status(201).json({
             success: 1,

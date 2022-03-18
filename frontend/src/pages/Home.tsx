@@ -3,9 +3,11 @@ import MainContent from '../components/MainContent';
 
 const Home = () => {
   return (
-    <div className="flex items-start flex-wrap w-[95%] mx-auto my-8">
-      <Sidebar />
-      <MainContent />
+    <div className="h-[100vh] grid place-items-center">
+      <div className="flex items-start flex-wrap w-[95%] mx-auto">
+        <Sidebar />
+        <MainContent />
+      </div>
     </div>
   );
 };

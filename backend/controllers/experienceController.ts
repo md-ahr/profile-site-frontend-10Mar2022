@@ -17,7 +17,6 @@ export const addExperience: RequestHandler = asyncHandler(async (req: any, res: 
     if (!companyName || !designation || !jobDescription || !startDate || !location || !userId) {
         return res.status(400).json({ success: 0, message: 'Please enter all the required fields!'});
     }
-    console.log(req.files[0]);
     if (req.files && req.files.length > 0) {
         cloudinary.v2.uploader.upload(req.files[0].path, { overwrite: true }, async function(error: any, image: any) {
             experience = await Experience.create({ companyName, designation, jobDescription, startDate, endDate, location, companyLogo: image.url, userId });

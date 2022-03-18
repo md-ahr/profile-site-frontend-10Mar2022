@@ -18,6 +18,14 @@ const BioModal = () => {
     const [profilePic, setProfilePic] = useState(user && user.profilePic);
 
     const userInfoUpdate = async() => {
+      if (!userDesignation) {
+        toast.error('Please provide your designation!');
+        return;
+      }
+      if (!bio) {
+        toast.error('Please provide your bio description!');
+        return;
+      }
       const formData = new FormData();
       formData.append('userDesignation', userDesignation);
       formData.append('bio', bio);
@@ -32,10 +40,11 @@ const BioModal = () => {
           setOpen(false);
         }
       } catch (error) {
-        const err = error as AxiosError;
-        if (err.response) {
-          toast.error(err.response?.data.message);
-        }
+          setOpen(true);
+          const err = error as AxiosError;
+          if (err.response) {
+              toast.error(err.response?.data.message);
+          }
       }
     };
 
