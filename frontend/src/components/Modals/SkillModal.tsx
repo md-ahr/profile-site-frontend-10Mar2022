@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Modal } from 'react-responsive-modal';
 import { toast } from 'react-toastify';
-import { useGlobalState, useGlobalDispatch } from '../context/userContext';
+import { useGlobalState, useGlobalDispatch } from '../../context/userContext';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
 const SkillModal = () => {

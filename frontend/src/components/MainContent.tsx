@@ -1,6 +1,5 @@
-
 import BasicInfo from './BasicInfo';
-import ExperienceList from './ExperienceList';
+import ExperienceList from './Experience';
 
 const MainContent = () => {
   return (

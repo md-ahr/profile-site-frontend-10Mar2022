@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Modal } from 'react-responsive-modal';
 import { toast } from 'react-toastify';
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { useGlobalState } from '../context/userContext';
+import { useGlobalState } from '../../context/userContext';
 
 const AddExperienceModal = (props: any) => {
 

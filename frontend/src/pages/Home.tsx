@@ -3,7 +3,7 @@ import MainContent from '../components/MainContent';
 
 const Home = () => {
   return (
-    <div className="h-[100vh] grid place-items-center">
+    <div className="h-[100vh] pt-5">
       <div className="flex items-start flex-wrap w-[95%] mx-auto">
         <Sidebar />
         <MainContent />

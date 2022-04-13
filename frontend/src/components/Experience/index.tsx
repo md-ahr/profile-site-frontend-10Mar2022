@@ -1,11 +1,11 @@
 import { useEffect, useCallback } from 'react';
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { useGlobalState, useGlobalDispatch } from '../context/userContext';
-import AddExperienceModal from './AddExperienceModal';
-import EditExperienceModal from './EditExperienceModal';
-import DeleteExperienceModal from './DeleteExperienceModal';
+import { useGlobalState, useGlobalDispatch } from '../../context/userContext';
+import AddExperienceModal from '../Modals/AddExperienceModal';
+import EditExperienceModal from '../Modals/EditExperienceModal';
+import DeleteExperienceModal from '../Modals/DeleteExperienceModal';
 
-const ExperienceList = () => {
+const ExperienceList = (): JSX.Element => {
 
     const { token, user, experiences }: any = useGlobalState();
     const dispatch: any = useGlobalDispatch();
@@ -64,7 +64,7 @@ const ExperienceList = () => {
                         <DeleteExperienceModal handleUpdateData={handleUpdateData} id={experience._id} />
                     </div>
                 </div>
-            )) : <p className="text-sm text-slate-500 mt-4">No experience available</p>}
+            )) : <p className="text-sm text-slate-400 font-medium mt-4">No experience available</p>}
         </div>
     );
 };

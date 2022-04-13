@@ -1,8 +1,8 @@
 import { FaRegEnvelope } from 'react-icons/fa';
-import { useGlobalState } from '../context/userContext';
-import ModalBox from './EditModalBox';
+import { useGlobalState } from '../../context/userContext';
+import ModalBox from '../Modals/EditModalBox';
 
-const BasicInfo = () => {
+const BasicInfo = (): JSX.Element => {
 
   const { user }: any = useGlobalState() || {};
 
