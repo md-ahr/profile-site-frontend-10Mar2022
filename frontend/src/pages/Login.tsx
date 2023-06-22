@@ -23,7 +23,7 @@ const Login = () => {
 
   const userLogin = async() => {
     try {
-      const res: AxiosResponse<any> = await axios.post('/auth/login', user);
+      const res: AxiosResponse<any> = await axios.post('https://profile-site-frontend-10-mar2022-e5fx.vercel.app/api/v1/auth/login', user);
       if (res.status === 200) {
         toast.success(res.data.message);
         localStorage.setItem('token', res.data.token);
