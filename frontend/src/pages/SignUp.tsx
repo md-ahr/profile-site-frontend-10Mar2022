@@ -32,10 +32,9 @@ const SignUp = () => {
         dispatch({ type: 'success', value: { token: res.data.token, user: JSON.parse(user) } });
         navigate(`/profile/${res.data.user._id}`);
       }
-    } catch (error) {
-      const err = error as AxiosError;
-      if (err.response) {
-        toast.error(err.response?.data.message);
+    } catch (error: any) {
+      if (error.response) {
+        toast.error(error.response?.data.message);
         dispatch({ type: 'failure', value: { token: '', user: '' } });
       }
     }

@@ -25,10 +25,9 @@ const DeleteExperienceModal = (props: any) => {
             dispatch({ type: 'experience', value: JSON.parse(userData) });
             setOpen(false);
             }
-        } catch (error) {
-            const err = error as AxiosError;
-            if (err.response) {
-                toast.error(err.response?.data.message);
+        } catch (error: any) {
+            if (error.response) {
+                toast.error(error.response?.data.message);
             }
         }
     };

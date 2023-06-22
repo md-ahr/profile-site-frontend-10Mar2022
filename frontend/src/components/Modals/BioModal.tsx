@@ -39,11 +39,10 @@ const BioModal = () => {
           dispatch({ type: 'success', value: { token, user: JSON.parse(user) } });
           setOpen(false);
         }
-      } catch (error) {
+      } catch (error: any) {
           setOpen(true);
-          const err = error as AxiosError;
-          if (err.response) {
-              toast.error(err.response?.data.message);
+          if (error.response) {
+              toast.error(error.response?.data.message);
           }
       }
     };
