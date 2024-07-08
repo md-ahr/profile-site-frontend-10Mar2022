@@ -29,11 +29,6 @@ Install create-react-app npm package globally. This will help to easily run the 
 ```bash
 npm install -g create-react-app
 ```
-## Live Application URL
-
-The Application is deployed in https://mern-job-profiler.herokuapp.com
-
-Click on the link to see the application
 
 ## Cloning and Running the Application in local
 
