@@ -15,7 +15,7 @@ This Project is a Typescript, Node JS and ReactJS Project which demonstrates the
 
 ## Live Application URL
 
-### https://mern-job-profiler.herokuapp.com
+### https://job-profiler.vercel.app/
 This URL has the application deployed in
 
 ## Prerequisites
